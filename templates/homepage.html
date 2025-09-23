@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AthletiX — College Sports Hub</title>
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind config: add Inter as default font -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            'ath-blue': '#1fb6ff',
+            'ath-green': '#7cffcb',
+            'ath-orange': '#ff6b6b',
+            'ath-dark': '#0b1020'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Basic meta for social + icons -->
+  <meta name="description" content="AthletiX — Your college sports hub for athlete tracking, events & live scores." />
+</head>
+<body class="bg-gradient-to-b from-black via-slate-900 to-gray-900 text-slate-100 font-sans">
+
+  <!-- SITE WRAPPER -->
+  <div id="app" class="min-h-screen flex flex-col">
+
+    <!-- HEADER / NAV -->
+    <header class="w-full sticky top-0 z-40 bg-clip-padding bg-opacity-60 backdrop-blur-md"
+            style="background: linear-gradient(to right, rgba(6,8,15,0.7), rgba(8,10,18,0.55));">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#hero" class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-ath-blue to-ath-green shadow-lg">
+            <!-- Simple A monogram -->
+            <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 20L12 4L21 20H3Z" stroke="black" stroke-width="1" stroke-linejoin="round" />
+              <path d="M9 14H15" stroke="black" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="text-xl font-extrabold tracking-tight">AthletiX</span>
+        </a>
+
+        <!-- Desktop nav links -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a class="nav-link text-sm hover:text-ath-blue transition" href="#hero">Home</a>
+          <a class="nav-link text-sm hover:text-ath-blue transition" href="#competitions">Sports</a>
+          <a class="nav-link text-sm hover:text-ath-blue transition" href="#competitions">Events</a>
+          <a class="nav-link text-sm hover:text-ath-blue transition" href="#leaderboard">Leaderboard</a>
+          <a class="nav-link text-sm hover:text-ath-blue transition" href="#about">Profile</a>
+          <a class="nav-link text-sm hover:text-ath-blue transition" href="#updates">Contact</a>
+        </nav>
+
+        <!-- Auth buttons -->
+        <div class="hidden md:flex items-center gap-3">
+          <button id="loginBtn" class="px-4 py-2 rounded-full border border-slate-700 text-sm hover:bg-white/5 transition">Log In</button>
+          <button id="signupBtn" class="px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-br from-ath-blue to-ath-orange shadow-md hover:scale-[1.02] transform transition">Sign Up</button>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <div class="md:hidden flex items-center">
+          <button id="mobileToggle" aria-label="Toggle menu" class="p-2 rounded-lg bg-white/5">
+            <svg id="hamburgerIcon" class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+              <path d="M4 7H20" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M4 12H20" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M4 17H20" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu (hidden by default) -->
+      <div id="mobileMenu" class="md:hidden px-4 pb-4 hidden">
+        <div class="flex flex-col gap-3">
+          <a class="py-2 px-3 rounded-lg hover:bg-white/5 transition" href="#hero">Home</a>
+          <a class="py-2 px-3 rounded-lg hover:bg-white/5 transition" href="#competitions">Sports</a>
+          <a class="py-2 px-3 rounded-lg hover:bg-white/5 transition" href="#competitions">Events</a>
+          <a class="py-2 px-3 rounded-lg hover:bg-white/5 transition" href="#leaderboard">Leaderboard</a>
+          <a class="py-2 px-3 rounded-lg hover:bg-white/5 transition" href="#about">Profile</a>
+          <a class="py-2 px-3 rounded-lg hover:bg-white/5 transition" href="#updates">Contact</a>
+          <div class="flex gap-3">
+            <button class="flex-1 py-2 rounded-full border border-slate-700">Log In</button>
+            <button class="flex-1 py-2 rounded-full bg-gradient-to-br from-ath-blue to-ath-orange font-semibold">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative overflow-hidden">
+      <!-- Rotating background images will be set on this container -->
+      <div id="heroBg" class="min-h-[70vh] md:min-h-screen flex items-center"
+           style="background-size:cover;background-position:center;transition:background-image 1s ease-in-out;">
+        <!-- overlay for gradient and depth -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/45 to-black/60"></div>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-4 py-20 flex flex-col-reverse md:flex-row items-center gap-8">
+          <!-- Left: Text -->
+          <div class="w-full md:w-1/2">
+            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight mb-4">Your College Sports Hub</h1>
+            <p class="text-slate-300 mb-6 max-w-xl">Unleash your potential, track your progress, and dominate the competition.</p>
+
+            <div class="flex gap-3 flex-wrap">
+              <a id="ctaGetStarted" href="#competitions" class="inline-flex items-center gap-3 px-5 py-3 rounded-full font-semibold bg-gradient-to-r from-ath-blue to-ath-green shadow-lg hover:scale-[1.02] transform transition">
+                <!-- CTA icon -->
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12h14" stroke="black" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M12 5l7 7-7 7" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Get Started
+              </a>
+
+              <a href="#about" class="inline-flex items-center gap-2 px-4 py-3 rounded-full text-sm border border-slate-700 hover:bg-white/5 transition">
+                Learn More
+              </a>
+            </div>
+
+            <!-- small feature chips -->
+            <div class="mt-6 flex gap-2 flex-wrap">
+              <div class="px-3 py-1 rounded-full bg-white/5 text-xs">Athlete Tracking</div>
+              <div class="px-3 py-1 rounded-full bg-white/5 text-xs">Event Management</div>
+              <div class="px-3 py-1 rounded-full bg-white/5 text-xs">Live Scores</div>
+            </div>
+          </div>
+
+          <!-- Right: small feature cards that float -->
+          <div class="w-full md:w-1/2 flex flex-col gap-4 items-stretch">
+            <div class="bg-white/5 border border-white/5 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-slate-300">Next Match</div>
+                  <div class="font-semibold">Inter-College Football League</div>
+                </div>
+                <div class="text-right text-sm">
+                  <div class="text-xs text-slate-300">Date</div>
+                  <div class="font-semibold">Oct 10, 2025</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white/5 border border-white/5 rounded-2xl p-4 shadow-xl backdrop-blur-sm">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-slate-300">Top Performer</div>
+                  <div class="font-semibold">A. Sharma — 98 pts</div>
+                </div>
+                <div class="text-right text-sm">
+                  <div class="text-xs text-slate-300">Sport</div>
+                  <div class="font-semibold">Swimming</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-ath-blue/10 to-ath-orange/8 border border-white/5 rounded-2xl p-4 shadow-2xl backdrop-blur-sm">
+              <div class="text-xs text-slate-300">Announcements</div>
+              <div class="mt-2 text-sm">Registration open for the Annual Track & Field Meet — slots are limited!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- indicators for hero rotation -->
+      <div class="relative z-20 max-w-6xl mx-auto px-4 pb-6 flex gap-3 justify-center">
+        <div id="heroIndicators" class="flex gap-2"></div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-6xl mx-auto px-4 py-10 space-y-12">
+
+      <!-- FEATURED COMPETITIONS -->
+      <section id="competitions" class="rounded-2xl p-6 bg-gradient-to-br from-slate-800/60 to-slate-900 border border-white/5 shadow-lg">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">Upcoming Competitions & Fests</h2>
+          <a href="#competitions" class="text-sm text-ath-blue hover:underline">View all events</a>
+        </div>
+
+        <!-- Grid of interactive cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Cards will be rendered here by JS for easier dynamic handling -->
+          <div id="competitionsGrid" class="contents"></div>
+        </div>
+      </section>
+
+      <!-- REAL-TIME UPDATES -->
+      <section id="updates" class="rounded-2xl p-6 bg-gradient-to-br from-slate-800/50 to-slate-900 border border-white/5 shadow-lg">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">Live Scores & Updates</h2>
+          <div class="text-sm text-slate-400">Updated moments ago</div>
+        </div>
+
+        <!-- Feed -->
+        <div id="liveFeed" class="space-y-3">
+          <!-- feed items injected by JS -->
+        </div>
+
+        <div class="mt-4 text-sm text-slate-400">This feed is a demo of dynamic live updates. Integrate your backend's websocket or polling to replace mock data.</div>
+      </section>
+
+      <!-- LEADERBOARD -->
+      <section id="leaderboard" class="rounded-2xl p-6 bg-gradient-to-br from-slate-800/50 to-slate-900 border border-white/5 shadow-lg">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">Top Athletes of the Month</h2>
+          <div class="text-sm text-slate-400">Top 10</div>
+        </div>
+
+        <div class="overflow-x-auto rounded-lg">
+          <table class="min-w-full table-auto bg-white/3 rounded-lg">
+            <thead class="text-left text-sm text-slate-300">
+              <tr>
+                <th class="px-4 py-3">Rank</th>
+                <th class="px-4 py-3">Athlete</th>
+                <th class="px-4 py-3">Sport</th>
+                <th class="px-4 py-3">Points</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody" class="text-sm">
+              <!-- rows populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="rounded-2xl p-6 bg-gradient-to-br from-slate-800/50 to-slate-900 border border-white/5 shadow-lg">
+        <h2 class="text-2xl font-bold mb-4">What is AthletiX?</h2>
+        <p class="text-slate-300 max-w-3xl">
+          AthletiX is a college sports management platform built to empower student-athletes, coaches, and campus sports organizers.
+          Our mission is to make athlete tracking, event management, and community engagement seamless and data-driven.
+          With features like athlete performance tracking, organized event registration, live score updates, leaderboards, and social feeds,
+          AthletiX helps institutions create a safer, more competitive, and more connected sports ecosystem.
+        </p>
+
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-xl bg-white/5">
+            <div class="font-semibold">Athlete Tracking</div>
+            <div class="text-sm text-slate-400">Detailed stats, progress charts, and training logs.</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white/5">
+            <div class="font-semibold">Event Management</div>
+            <div class="text-sm text-slate-400">Create fixtures, accept registrations, and manage results.</div>
+          </div>
+          <div class="p-4 rounded-xl bg-white/5">
+            <div class="font-semibold">Community</div>
+            <div class="text-sm text-slate-400">Announcements, social integrations, and campus leaderboards.</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-white/5 pt-6 pb-8">
+      <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-ath-blue to-ath-green shadow-lg">
+            <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none">
+              <path d="M3 20L12 4L21 20H3Z" stroke="black" stroke-width="1" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div>
+            <div class="font-semibold">AthletiX</div>
+            <div class="text-xs text-slate-400">© <span id="currentYear"></span> AthletiX. All rights reserved.</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <!-- Social icons -->
+          <a href="#" class="p-2 rounded-full bg-white/5 hover:scale-105 transition" aria-label="Twitter">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+              <path d="M22 5.8c-.6.3-1.3.5-2 .6.7-.4 1.2-1 1.5-1.7-.6.4-1.3.7-2.1.8C18.3 4.6 17.5 4 16.6 4c-1.4 0-2.5 1.1-2.5 2.4 0 .2 0 .4.1.6C11.9 7 9.1 5.6 7.2 3.5c-.2.4-.4.8-.4 1.3 0 .9.5 1.7 1.2 2.1-.5 0-1-.2-1.4-.4v.1c0 1.3.9 2.4 2.1 2.6-.4.1-.8.1-1.2.1-.3 0-.6 0-.9-.1.6 1.8 2.2 3.1 4.2 3.1C8 16 6.2 16.6 4.3 16.6c-.3 0-.6 0-.9-.1 1.9 1.3 4.2 2 6.6 2 7.9 0 12.2-6.8 12.2-12.7v-.6C21 7 21.6 6.4 22 5.8z" fill="currentColor"/>
+            </svg>
+          </a>
+          <a href="#" class="p-2 rounded-full bg-white/5 hover:scale-105 transition" aria-label="Instagram">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+              <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zM12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM17.6 6.4a.9.9 0 1 1 1.8 0 .9.9 0 0 1-1.8 0z" fill="currentColor"/>
+            </svg>
+          </a>
+          <a href="#" class="p-2 rounded-full bg-white/5 hover:scale-105 transition" aria-label="Facebook">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+              <path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8.5v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2V12h2.3l-.4 3H14v7A10 10 0 0 0 22 12z" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="max-w-6xl mx-auto px-4 mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+        <div class="flex gap-4">
+          <a href="#" class="hover:underline">Privacy Policy</a>
+          <a href="#" class="hover:underline">Terms of Service</a>
+        </div>
+        <div>Made with ❤️ for college athletes.</div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- JAVASCRIPT: functionality & mock dynamic content -->
+  <script>
+    /* ============================
+       Mock Data (replace with real API responses)
+       ============================ */
+    const heroImages = [
+      // Placeholder sports images (Unsplash)
+      "url('https://images.unsplash.com/photo-1505842465776-3b6d6a8f0f5a?w=1600&q=80&auto=format&fit=crop')",
+      "url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1600&q=80&auto=format&fit=crop')",
+      "url('https://images.unsplash.com/photo-1534258936925-6a1c0c6d6f63?w=1600&q=80&auto=format&fit=crop')",
+      "url('https://images.unsplash.com/photo-1521412644187-c49fa049e84d?w=1600&q=80&auto=format&fit=crop')"
+    ];
+
+    // Mock competitions
+    const competitionsData = [
+      {
+        id: 1,
+        title: "Inter-College Football League",
+        date: "Oct 10, 2025",
+        image: "https://images.unsplash.com/photo-1517927033932-b3d4d5ec27b8?w=800&q=60&auto=format&fit=crop",
+        desc: "Regional inter-college football league across 12 colleges."
+      },
+      {
+        id: 2,
+        title: "Annual Track & Field Meet",
+        date: "Nov 05, 2025",
+        image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=60&auto=format&fit=crop",
+        desc: "Sprint, hurdles, long jump and more."
+      },
+      {
+        id: 3,
+        title: "Inter-College Basketball Cup",
+        date: "Oct 25, 2025",
+        image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=60&auto=format&fit=crop",
+        desc: "Fast-paced knockout tournament."
+      },
+      {
+        id: 4,
+        title: "Swimming Gala",
+        date: "Dec 12, 2025",
+        image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=60&auto=format&fit=crop",
+        desc: "Short-distance and medley relays."
+      },
+      {
+        id: 5,
+        title: "State-Level Cricket Fest",
+        date: "Jan 14, 2026",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&q=60&auto=format&fit=crop",
+        desc: "T20 carnivals across campuses."
+      }
+    ];
+
+    // Mock live feed
+    let liveFeedItems = [
+      "Basketball Final: Wildcats 85, Eagles 80",
+      "New record set in 100m sprint by S. Verma - 10.2s!",
+      "Inter-College Football: Tigers beat Lions 3-2 (penalty shootout)",
+      "Registration opens for Swimming Gala — limited slots",
+      "Coach meeting scheduled for Oct 1, 2025 at 5:00 PM"
+    ];
+
+    // Mock leaderboard
+    const leaderboardData = [
+      {rank:1, name:"Arjun Sharma", sport:"Swimming", points:980},
+      {rank:2, name:"Nisha Patel", sport:"Athletics", points:920},
+      {rank:3, name:"Rahul Mehra", sport:"Football", points:860},
+      {rank:4, name:"Priya Reddy", sport:"Badminton", points:820},
+      {rank:5, name:"Vikram Singh", sport:"Basketball", points:790},
+      {rank:6, name:"Asha K.", sport:"Wrestling", points:760},
+      {rank:7, name:"Karan B.", sport:"Cricket", points:730},
+      {rank:8, name:"Sana D.", sport:"Tennis", points:700},
+      {rank:9, name:"Manav P.", sport:"Cycling", points:680},
+      {rank:10, name:"Isha M.", sport:"Gymnastics", points:650}
+    ];
+
+
+    /* ============================
+       DOM Helpers & Renderers
+       ============================ */
+
+    // Render competitions cards into the grid
+    function renderCompetitions() {
+      const grid = document.getElementById('competitionsGrid');
+      grid.innerHTML = ''; // clear
+
+      competitionsData.forEach(event => {
+        const card = document.createElement('article');
+        card.className = "rounded-2xl overflow-hidden shadow-xl transform hover:scale-[1.02] transition bg-gradient-to-br from-white/3 to-white/2 border border-white/5";
+        card.innerHTML = `
+          <div class="h-44 sm:h-48 lg:h-40 w-full bg-cover bg-center" style="background-image: url('${event.image}');"></div>
+          <div class="p-4">
+            <h3 class="font-semibold">${event.title}</h3>
+            <p class="text-sm text-slate-300 my-2">${event.desc}</p>
+            <div class="flex items-center justify-between">
+              <div class="text-xs text-slate-400">${event.date}</div>
+              <button class="registerBtn px-3 py-2 rounded-full text-sm font-semibold bg-gradient-to-br from-ath-blue to-ath-orange">Register Now</button>
+            </div>
+          </div>
+        `;
+        // Attach click for the whole card for future extension:
+        card.querySelector('.registerBtn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Placeholder - open signup/registration flow (wired to #signupBtn for demo)
+          document.getElementById('signupBtn').classList.add('animate-bounce');
+          setTimeout(()=>document.getElementById('signupBtn').classList.remove('animate-bounce'), 700);
+          alert(`Registration flow for: ${event.title}\n(Replace alert with actual registration modal.)`);
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    // Render live feed items
+    function renderLiveFeed() {
+      const feed = document.getElementById('liveFeed');
+      feed.innerHTML = '';
+      liveFeedItems.slice(0,6).forEach(item => {
+        const el = document.createElement('div');
+        el.className = "p-3 rounded-xl bg-white/5 border border-white/3 flex items-start gap-3";
+        el.innerHTML = `
+          <div class="w-2 h-8 rounded-full bg-ath-green mt-1"></div>
+          <div>
+            <div class="text-sm">${item}</div>
+            <div class="text-xs text-slate-400 mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          </div>
+        `;
+        feed.appendChild(el);
+      });
+    }
+
+    // Render leaderboard table rows
+    function renderLeaderboard() {
+      const tbody = document.getElementById('leaderboardBody');
+      tbody.innerHTML = '';
+      leaderboardData.forEach(player => {
+        const tr = document.createElement('tr');
+        tr.className = "border-t border-white/5";
+        tr.innerHTML = `
+          <td class="px-4 py-3">${player.rank}</td>
+          <td class="px-4 py-3 font-semibold">${player.name}</td>
+          <td class="px-4 py-3 text-slate-300">${player.sport}</td>
+          <td class="px-4 py-3">${player.points}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ============================
+       Hero background rotation
+       ============================ */
+    (function heroRotateInit() {
+      const heroEl = document.getElementById('heroBg');
+      const indicators = document.getElementById('heroIndicators');
+
+      // create indicators
+      heroImages.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = "w-2 h-2 rounded-full bg-white/30 hover:bg-white/50";
+        dot.setAttribute('data-index', i);
+        dot.addEventListener('click', () => {
+          currentHeroIndex = i;
+          updateHeroBg();
+          resetHeroTimer();
+        });
+        indicators.appendChild(dot);
+      });
+
+      let currentHeroIndex = 0;
+      let heroTimer = null;
+
+      function updateHeroBg() {
+        heroEl.style.backgroundImage = heroImages[currentHeroIndex];
+        // visual indicator update
+        Array.from(indicators.children).forEach((d, idx) => {
+          d.classList.toggle('bg-ath-blue', idx === currentHeroIndex);
+          d.classList.toggle('bg-white/30', idx !== currentHeroIndex);
+        });
+      }
+
+      function nextHero() {
+        currentHeroIndex = (currentHeroIndex + 1) % heroImages.length;
+        updateHeroBg();
+      }
+
+      function resetHeroTimer() {
+        if (heroTimer) clearInterval(heroTimer);
+        heroTimer = setInterval(nextHero, 6000);
+      }
+
+      updateHeroBg();
+      resetHeroTimer();
+    })();
+
+    /* ============================
+       Mobile nav toggle
+       ============================ */
+    (function mobileNav() {
+      const mobileToggle = document.getElementById('mobileToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+
+      mobileToggle.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.contains('hidden');
+        if (isHidden) {
+          mobileMenu.classList.remove('hidden');
+          mobileMenu.classList.add('block');
+        } else {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('block');
+        }
+      });
+    })();
+
+    /* ============================
+       Smooth scrolling for nav links
+       ============================ */
+    (function smoothScrollInit() {
+      // Attach to all anchor links that reference IDs on the page
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href').slice(1);
+          if (!targetId) return;
+          const target = document.getElementById(targetId);
+          if (target) {
+            e.preventDefault();
+            // Use modern smooth scroll
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // If mobile menu open, close it
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+              mobileMenu.classList.add('hidden');
+            }
+          }
+        });
+      });
+    })();
+
+    /* ============================
+       Simulate live feed updates (mock)
+       - NOTE: Replace with real-time websocket or server polling in production.
+       ============================ */
+    (function simulateLiveFeed() {
+      renderLiveFeed();
+
+      // Every 9s push a new mock item to the top (demo purposes)
+      setInterval(() => {
+        const sampleUpdates = [
+          "Coach's announcement: Practice postponed due to rain.",
+          "Tennis semifinal: S. Rao def. K. Patel (7-5, 6-4)",
+          "New personal best in javelin by M. Roy — 62.3m",
+          "Cricket: College XI posts 245/8",
+          "Volleyball: Quarterfinals schedule released"
+        ];
+        const next = sampleUpdates[Math.floor(Math.random() * sampleUpdates.length)];
+        liveFeedItems.unshift(next);
+        // keep feed reasonably sized
+        if (liveFeedItems.length > 12) liveFeedItems.pop();
+        renderLiveFeed();
+      }, 9000);
+    })();
+
+    /* ============================
+       Initialize page on load
+       ============================ */
+    (function init() {
+      renderCompetitions();
+      renderLeaderboard();
+      renderLiveFeed();
+      // set footer year
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+    })();
+
+    /* ============================
+       Accessibility & future hooks:
+       - The code uses semantic tags and buttons for interactivity.
+       - Replace mock arrays with fetch() calls to your backend API.
+       - For real-time updates, open a WebSocket and push updates into liveFeedItems.
+       - For registration, replace alert() with a modal / router navigation.
+       ============================ */
+
+  </script>
+</body>
+</html>
