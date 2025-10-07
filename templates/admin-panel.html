@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AthletiX Admin Panel</title>
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind config: add Inter as default font and custom palette -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            'ath-blue': '#1fb6ff',
+            'ath-green': '#7cffcb',
+            'ath-orange': '#ff6b6b',
+            'ath-dark': '#0b1020'
+          }
+        }
+      }
+    }
+  </script>
+
+  <meta name="description" content="AthletiX Admin Panel — Manage events, users, scores, and finances." />
+</head>
+<body class="antialiased bg-gradient-to-b from-black via-slate-900 to-gray-900 text-slate-100">
+
+  <!-- Main wrapper: flex with fixed sidebar -->
+  <div class="min-h-screen flex">
+
+    <!-- SIDEBAR (fixed on left for md and above; toggleable on mobile) -->
+    <aside id="sidebar" class="w-72 bg-slate-900/60 backdrop-blur-md border-r border-white/5 p-4 hidden md:block fixed inset-y-0 left-0 z-40">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-ath-blue to-ath-green shadow">
+          <svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="none">
+            <path d="M3 20L12 4L21 20H3Z" stroke="black" stroke-width="1" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <div class="text-lg font-extrabold">AthletiX Admin</div>
+          <div class="text-xs text-slate-400">Admin Panel</div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="space-y-1">
+        <button data-section="dashboard" class="nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-3">
+          <svg class="w-5 h-5 text-ath-blue" viewBox="0 0 24 24" fill="none"><path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM13 3v6h8V3h-8zM3 21h8v-8H3v8z" fill="currentColor"/></svg>
+          Dashboard
+        </button>
+
+        <button data-section="event-management" class="nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-3">
+          <svg class="w-5 h-5 text-ath-green" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 2v4M16 2v4M3 10h18v10H3z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Events & Schedules
+        </button>
+
+        <button data-section="user-management" class="nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-3">
+          <svg class="w-5 h-5 text-ath-orange" viewBox="0 0 24 24" fill="none"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM3 22a9 9 0 0 1 18 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          User Management
+        </button>
+
+        <button data-section="score-entry" class="nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-3">
+          <svg class="w-5 h-5 text-ath-blue" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Score & Updates Entry
+        </button>
+
+        <button data-section="financials" class="nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-3">
+          <svg class="w-5 h-5 text-ath-green" viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Financials & Sponsorships
+        </button>
+      </nav>
+
+      <!-- Quick info and logout -->
+      <div class="mt-8 border-t border-white/5 pt-4">
+        <div class="text-xs text-slate-400 mb-2">Logged in as</div>
+        <div class="text-sm font-semibold">Admin: user-xyz-123</div>
+        <button id="logoutBtn" class="mt-4 w-full px-3 py-2 rounded-full bg-gradient-to-br from-ath-blue to-ath-orange text-black font-semibold hover:opacity-95">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Mobile top bar (for small screens) -->
+    <div class="md:hidden fixed top-0 left-0 right-0 z-50 bg-slate-900/70 backdrop-blur-sm border-b border-white/5 flex items-center justify-between p-3">
+      <div class="flex items-center gap-3">
+        <button id="mobileSidebarToggle" class="p-2 rounded-lg bg-white/5">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="font-semibold">AthletiX Admin</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-xs text-slate-400 hidden sm:block">Admin: user-xyz-123</div>
+        <button id="mobileLogout" class="px-3 py-1 rounded-full bg-gradient-to-br from-ath-blue to-ath-orange text-black text-sm">Logout</button>
+      </div>
+    </div>
+
+    <!-- Mobile sidebar sliding panel -->
+    <div id="mobileSidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900/95 p-4 transform -translate-x-full transition-transform md:hidden">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded bg-gradient-to-br from-ath-blue to-ath-green flex items-center justify-center">
+            <svg class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="none"><path d="M3 20L12 4L21 20H3Z" stroke="black" stroke-width="1" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="font-semibold">AthletiX Admin</div>
+        </div>
+        <button id="mobileSidebarClose" class="p-2 rounded bg-white/5">Close</button>
+      </div>
+      <nav class="space-y-1">
+        <button data-section="dashboard" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5">Dashboard</button>
+        <button data-section="event-management" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5">Events & Schedules</button>
+        <button data-section="user-management" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5">User Management</button>
+        <button data-section="score-entry" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5">Score & Updates</button>
+        <button data-section="financials" class="mobile-nav-btn w-full text-left px-3 py-2 rounded-lg hover:bg-white/5">Financials</button>
+      </nav>
+    </div>
+
+    <!-- MAIN CONTENT AREA (push right when sidebar visible on md+) -->
+    <main id="mainContent" class="flex-1 min-h-screen md:ml-72 pt-20 md:pt-8 px-4 pb-12">
+
+      <!-- Top area: breadcrumbs / page title -->
+      <div id="pageHeader" class="flex items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 id="pageTitle" class="text-2xl font-extrabold">Dashboard Overview</h1>
+          <div class="text-sm text-slate-400">Welcome back — manage events, users, scores, and finances.</div>
+        </div>
+
+        <!-- Quick action buttons -->
+        <div class="flex items-center gap-3">
+          <button id="createEventQuick" class="px-3 py-2 rounded-full bg-white/6 text-sm hover:bg-white/8">Create New Event</button>
+          <div class="hidden sm:flex items-center gap-3">
+            <div class="text-xs text-slate-400">View as</div>
+            <select id="viewSelect" class="bg-transparent border border-white/5 px-3 py-2 rounded-lg">
+              <option>Admin</option>
+              <option>Coach</option>
+              <option>Organizer</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Dashboard -->
+      <section id="dashboard" class="dashboard-section space-y-6">
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-white/3 to-white/2 border border-white/5 shadow">
+            <div class="text-xs text-slate-400">Total Registered Users</div>
+            <div id="kpiUsers" class="text-2xl font-bold mt-2">-</div>
+            <div class="text-xs text-slate-400 mt-2">All-time registered athletes, coaches & admins</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-white/3 to-white/2 border border-white/5 shadow">
+            <div class="text-xs text-slate-400">Active Competitions</div>
+            <div id="kpiCompetitions" class="text-2xl font-bold mt-2">-</div>
+            <div class="text-xs text-slate-400 mt-2">Competitions currently accepting or scheduled</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-white/3 to-white/2 border border-white/5 shadow">
+            <div class="text-xs text-slate-400">Monthly Sponsorship Revenue</div>
+            <div id="kpiRevenue" class="text-2xl font-bold mt-2">-</div>
+            <div class="text-xs text-slate-400 mt-2">Recent month total from sponsors</div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-white/3 to-white/2 border border-white/5 shadow">
+            <div class="text-xs text-slate-400">New Registrations (7d)</div>
+            <div id="kpiNewRegs" class="text-2xl font-bold mt-2">-</div>
+            <div class="text-xs text-slate-400 mt-2">Registrations in the last 7 days</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions & Activity Feed -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 p-4 rounded-2xl bg-white/3 border border-white/5 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-semibold">Quick Actions</div>
+              <div class="text-xs text-slate-400">Shortcuts</div>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button id="quickCreateEvent" class="px-4 py-2 rounded-full bg-gradient-to-br from-ath-blue to-ath-green text-black font-semibold">Create Event</button>
+              <button id="quickPostUpdate" class="px-4 py-2 rounded-full bg-white/6">Post Live Update</button>
+              <button id="quickExport" class="px-4 py-2 rounded-full bg-white/6">Export Users</button>
+            </div>
+            <div class="mt-4">
+              <div class="text-sm text-slate-400 mb-2">Recent Admin Activity</div>
+              <ul id="adminActivity" class="space-y-2 text-sm">
+                <!-- Activity feed injected by JS -->
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-white/3 border border-white/5 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <div class="font-semibold">Shortcuts</div>
+              <div class="text-xs text-slate-400">Fast Links</div>
+            </div>
+            <div class="grid grid-cols-1 gap-3">
+              <button id="gotoEvents" class="text-left px-3 py-2 rounded-lg bg-white/5">Manage Events</button>
+              <button id="gotoUsers" class="text-left px-3 py-2 rounded-lg bg-white/5">Manage Users</button>
+              <button id="gotoFinancials" class="text-left px-3 py-2 rounded-lg bg-white/5">Financial Records</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: Events & Schedules -->
+      <section id="event-management" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Event creation form -->
+          <form id="eventForm" class="lg:col-span-1 p-4 rounded-2xl bg-white/3 border border-white/5 shadow space-y-3">
+            <h2 class="font-semibold">Create / Edit Event</h2>
+            <input type="hidden" id="eventId" />
+            <label class="text-xs text-slate-400">Event Name</label>
+            <input id="eventName" required class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" placeholder="Annual Track & Field Meet" />
+
+            <label class="text-xs text-slate-400">Sport Type</label>
+            <select id="eventSport" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5">
+              <option>Football</option>
+              <option>Basketball</option>
+              <option>Track & Field</option>
+              <option>Swimming</option>
+              <option>Cricket</option>
+              <option>Badminton</option>
+            </select>
+
+            <label class="text-xs text-slate-400">Date & Time</label>
+            <input id="eventDateTime" type="datetime-local" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+
+            <label class="text-xs text-slate-400">Location</label>
+            <input id="eventLocation" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" placeholder="College Stadium" />
+
+            <div class="flex items-center gap-3">
+              <label class="text-xs text-slate-400">Registration Status</label>
+              <div class="flex items-center gap-2 ml-auto">
+                <span class="text-xs text-slate-400">Closed</span>
+                <label class="inline-flex items-center relative">
+                  <input id="eventStatus" type="checkbox" class="sr-only" />
+                  <span class="w-10 h-5 bg-white/8 rounded-full shadow-inner"></span>
+                  <span class="absolute left-1 top-1 w-3 h-3 bg-ath-green rounded-full transition-transform" id="statusToggleDot"></span>
+                </label>
+                <span class="text-xs text-slate-400">Open</span>
+              </div>
+            </div>
+
+            <label class="text-xs text-slate-400">Description</label>
+            <textarea id="eventDescription" rows="4" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" placeholder="Add details, rules, registration link..."></textarea>
+
+            <div class="flex gap-3">
+              <button type="submit" class="flex-1 px-4 py-2 rounded-full bg-gradient-to-br from-ath-blue to-ath-orange text-black font-semibold">Save Event</button>
+              <button id="resetEvent" type="button" class="px-4 py-2 rounded-full border border-white/5">Reset</button>
+            </div>
+          </form>
+
+          <!-- Events table -->
+          <div class="lg:col-span-2 p-4 rounded-2xl bg-white/3 border border-white/5 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="font-semibold">Current Events</h2>
+              <div class="flex items-center gap-2">
+                <input id="searchEvents" placeholder="Search events..." class="px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+                <select id="filterSport" class="px-3 py-2 rounded-lg bg-transparent border border-white/5">
+                  <option value="">All Sports</option>
+                  <option>Football</option>
+                  <option>Basketball</option>
+                  <option>Track & Field</option>
+                  <option>Swimming</option>
+                  <option>Cricket</option>
+                  <option>Badminton</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="text-slate-400">
+                  <tr>
+                    <th class="text-left px-3 py-2">Name</th>
+                    <th class="text-left px-3 py-2">Sport</th>
+                    <th class="px-3 py-2">Date</th>
+                    <th class="px-3 py-2">Status</th>
+                    <th class="px-3 py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="eventsTableBody" class="align-top">
+                  <!-- rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: Score & Updates Entry -->
+      <section id="score-entry" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Live update form -->
+          <form id="scoreForm" class="p-4 rounded-2xl bg-white/3 border border-white/5 shadow space-y-3">
+            <h2 class="font-semibold">Post Live Update</h2>
+
+            <label class="text-xs text-slate-400">Select Event</label>
+            <select id="scoreEventSelect" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5">
+              <!-- options injected by JS -->
+            </select>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-slate-400">Team 1 Name</label>
+                <input id="team1Name" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-400">Team 1 Score</label>
+                <input id="team1Score" type="number" min="0" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-400">Team 2 Name</label>
+                <input id="team2Name" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-400">Team 2 Score</label>
+                <input id="team2Score" type="number" min="0" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+              </div>
+            </div>
+
+            <label class="text-xs text-slate-400">Update Type</label>
+            <select id="updateType" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5">
+              <option>Score Change</option>
+              <option>Announcement</option>
+              <option>Injury Report</option>
+            </select>
+
+            <div class="flex gap-3">
+              <button type="submit" class="flex-1 px-4 py-2 rounded-full bg-gradient-to-br from-ath-blue to-ath-green text-black font-semibold">Post Live Update</button>
+              <button id="resetScore" type="button" class="px-4 py-2 rounded-full border border-white/5">Reset</button>
+            </div>
+          </form>
+
+          <!-- Live updates preview -->
+          <div class="p-4 rounded-2xl bg-white/3 border border-white/5 shadow">
+            <h2 class="font-semibold mb-3">Live Updates Preview</h2>
+            <div id="liveUpdatesPreview" class="space-y-3 text-sm">
+              <!-- injected by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: User Management -->
+      <section id="user-management" class="hidden space-y-6">
+        <div class="p-4 rounded-2xl bg-white/3 border border-white/5 shadow">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold">Registered Users</h2>
+            <div class="flex items-center gap-2">
+              <input id="searchUsers" placeholder="Search users..." class="px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+              <button id="exportCsv" class="px-3 py-2 rounded-lg bg-gradient-to-br from-ath-blue to-ath-orange text-black">Export User Data (CSV)</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="text-slate-400">
+                <tr>
+                  <th class="text-left px-3 py-2">Name</th>
+                  <th class="text-left px-3 py-2">ID</th>
+                  <th class="text-left px-3 py-2">Sport Pref.</th>
+                  <th class="px-3 py-2">Status</th>
+                  <th class="px-3 py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <!-- injected by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mt-4 flex items-center justify-end gap-3 text-sm">
+            <button id="prevUserPage" class="px-3 py-1 rounded bg-white/5">Prev</button>
+            <div id="userPageInfo" class="text-slate-400">Page 1</div>
+            <button id="nextUserPage" class="px-3 py-1 rounded bg-white/5">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: Financials & Sponsorships -->
+      <section id="financials" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Financial record form -->
+          <form id="financialForm" class="lg:col-span-1 p-4 rounded-2xl bg-white/3 border border-white/5 shadow space-y-3">
+            <h2 class="font-semibold">Add Financial Record</h2>
+
+            <label class="text-xs text-slate-400">Record Type</label>
+            <select id="finType" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5">
+              <option>Sponsorship</option>
+              <option>Revenue</option>
+              <option>Expense</option>
+            </select>
+
+            <label class="text-xs text-slate-400">Amount (USD)</label>
+            <input id="finAmount" type="number" step="0.01" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+
+            <label class="text-xs text-slate-400">Source / Description</label>
+            <textarea id="finDesc" rows="3" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" placeholder="Nike Uniform Sponsorship Q3"></textarea>
+
+            <label class="text-xs text-slate-400">Date</label>
+            <input id="finDate" type="date" class="w-full px-3 py-2 rounded-lg bg-transparent border border-white/5" />
+
+            <div class="flex gap-3">
+              <button type="submit" class="flex-1 px-4 py-2 rounded-full bg-gradient-to-br from-ath-blue to-ath-green text-black font-semibold">Add Record</button>
+              <button id="resetFin" type="button" class="px-4 py-2 rounded-full border border-white/5">Reset</button>
+            </div>
+          </form>
+
+          <!-- Summary table -->
+          <div class="lg:col-span-2 p-4 rounded-2xl bg-white/3 border border-white/5 shadow">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="font-semibold">Recent Financial Transactions</h2>
+              <div class="text-xs text-slate-400">Latest 10</div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="text-slate-400">
+                  <tr>
+                    <th class="text-left px-3 py-2">Date</th>
+                    <th class="text-left px-3 py-2">Type</th>
+                    <th class="text-left px-3 py-2">Description</th>
+                    <th class="px-3 py-2 text-right">Amount (USD)</th>
+                  </tr>
+                </thead>
+                <tbody id="financialTableBody">
+                  <!-- injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JAVASCRIPT: client-side routing and mock data handling -->
+  <script>
+    /****************************************
+     * AthletiX Admin Panel - Single File App
+     * - Fixed left sidebar (md+)
+     * - Mobile toggleable sidebar
+     * - Client-side routing (tab switching)
+     * - Mock data structures for events, users, financials
+     * - Form handling & basic CRUD for mock data (in-memory)
+     * - Export CSV placeholder
+     ****************************************/
+
+    // -----------------------------
+    // Mock Data (replace with API)
+    // -----------------------------
+    let eventsData = [
+      { id: 'evt-001', name: 'Inter-College Football League', sport: 'Football', datetime: '2025-10-10T15:00', location: 'Main Field', status: 'Open', description: 'Knockout style competition.' },
+      { id: 'evt-002', name: 'Annual Track & Field Meet', sport: 'Track & Field', datetime: '2025-11-05T09:00', location: 'Athletics Track', status: 'Open', description: 'Sprints, Jumps and Throws.' },
+      { id: 'evt-003', name: 'Inter-College Basketball Cup', sport: 'Basketball', datetime: '2025-10-25T18:00', location: 'Indoor Arena', status: 'Closed', description: 'Elimination rounds.' }
+    ];
+
+    let usersData = [
+      { name: 'Arjun Sharma', id: 'usr-0001-abcdef', sport: 'Swimming', role: 'Athlete' },
+      { name: 'Nisha Patel', id: 'usr-0002-ghijkl', sport: 'Athletics', role: 'Athlete' },
+      { name: 'Rahul Mehra', id: 'usr-0003-mnopqr', sport: 'Football', role: 'Coach' },
+      { name: 'Priya Reddy', id: 'usr-0004-stuvwx', sport: 'Badminton', role: 'Athlete' },
+      // ... add more for pagination demo
+    ];
+
+    // generate extra mock users for pagination
+    for (let i=5;i<=32;i++){
+      usersData.push({
+        name:`User ${i}`,
+        id:`usr-${('000'+i).slice(-4)}-z${i}`,
+        sport: ['Cricket','Tennis','Cycling','Gymnastics'][i%4],
+        role: i%5===0 ? 'Admin' : (i%4===0 ? 'Coach' : 'Athlete')
+      });
+    }
+
+    let financialData = [
+      { date: '2025-09-01', type: 'Sponsorship', description: 'Nike Uniform Sponsorship Q3', amount: 15000.00 },
+      { date: '2025-09-10', type: 'Revenue', description: 'Ticket Sales - Football', amount: 2500.00 },
+      { date: '2025-09-20', type: 'Expense', description: 'Infrastructure - Track Maintenance', amount: -1200.50 }
+    ];
+
+    let adminActivity = [
+      'Score updated for Basketball - Semi Final',
+      'Created event: Inter-College Football League',
+      'Exported user data',
+      'Added financial record: Nike Sponsorship'
+    ];
+
+    // -----------------------------
+    // Utility Helpers
+    // -----------------------------
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    // Format currency for display
+    function formatCurrency(val) {
+      const n = Number(val);
+      return isNaN(n) ? '$0.00' : n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+
+    // Truncate ID for table display
+    function truncateId(id) {
+      return id.length > 10 ? id.slice(0,6) + '...' + id.slice(-3) : id;
+    }
+
+    // Generate unique ID (simple)
+    function generateId(prefix='id') {
+      return prefix + '-' + Math.random().toString(36).slice(2,9);
+    }
+
+    // -----------------------------
+    // Sidebar / Mobile toggles
+    // -----------------------------
+    (function sidebarControls() {
+      const mobileSidebar = $('#mobileSidebar');
+      const mobileToggle = $('#mobileSidebarToggle');
+      const closeBtn = $('#mobileSidebarClose');
+      const mobileSidebarCloseExternal = $('#mobileSidebarClose');
+
+      function openMobileSidebar() {
+        mobileSidebar.classList.remove('-translate-x-full');
+      }
+      function closeMobileSidebar() {
+        mobileSidebar.classList.add('-translate-x-full');
+      }
+
+      mobileToggle?.addEventListener('click', openMobileSidebar);
+      closeBtn?.addEventListener('click', closeMobileSidebar);
+
+      // mobile sidebar nav buttons close after navigating
+      $$('.mobile-nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const section = e.currentTarget.getAttribute('data-section');
+          navigateTo(section);
+          closeMobileSidebar();
+        });
+      });
+
+      // Mobile logout
+      $('#mobileLogout')?.addEventListener('click', () => {
+        alert('Logged out (placeholder).');
+      });
+      $('#logoutBtn')?.addEventListener('click', () => {
+        alert('Logged out (placeholder).');
+      });
+    })();
+
+    // -----------------------------
+    // Client-side routing (tab switching)
+    // - Shows/hides sections without reload
+    // -----------------------------
+    const sections = ['dashboard','event-management','score-entry','user-management','financials'];
+
+    function showSection(sectionId) {
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (id === sectionId) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      // update page title
+      const titleMap = {
+        'dashboard': 'Dashboard Overview',
+        'event-management': 'Events & Schedules',
+        'score-entry': 'Score & Updates Entry',
+        'user-management': 'User Management',
+        'financials': 'Financials & Sponsorships'
+      };
+      $('#pageTitle').textContent = titleMap[sectionId] || 'AthletiX Admin';
+
+      // update active nav button styles
+      $$('.nav-btn').forEach(btn => btn.classList.remove('bg-white/5'));
+      $$('.nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-section') === sectionId) btn.classList.add('bg-white/5');
+      });
+      $$('.mobile-nav-btn').forEach(btn => btn.classList.remove('bg-white/5'));
+      $$('.mobile-nav-btn').forEach(btn => {
+        if (btn.getAttribute('data-section') === sectionId) btn.classList.add('bg-white/5');
+      });
+    }
+
+    // Navigation handlers (sidebar buttons)
+    $$('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const section = e.currentTarget.getAttribute('data-section');
+        navigateTo(section);
+      });
+    });
+
+    function navigateTo(section) {
+      if (!sections.includes(section)) section = 'dashboard';
+      showSection(section);
+      // Optionally, update URL hash for bookmarkable view:
+      history.replaceState(null, '', '#'+section);
+    }
+
+    // On page load: go to hash or dashboard
+    (function initRouting() {
+      const hash = location.hash.replace('#','');
+      navigateTo(hash || 'dashboard');
+    })();
+
+    // -----------------------------
+    // Dashboard Renderers
+    // -----------------------------
+    function renderKPIs() {
+      $('#kpiUsers').textContent = usersData.length.toLocaleString();
+      $('#kpiCompetitions').textContent = eventsData.length;
+      // calculate sponsorship totals for month: we use financialData filter (demo)
+      const revenueThisMonth = financialData
+        .filter(r => r.type === 'Sponsorship' || r.type === 'Revenue')
+        .reduce((s, r) => s + Number(r.amount), 0);
+      $('#kpiRevenue').textContent = formatCurrency(revenueThisMonth);
+      // new regs: count users with id suffix created recently - mock with random
+      const recentRegs = Math.floor(Math.random()*200) + 20;
+      $('#kpiNewRegs').textContent = recentRegs;
+    }
+
+    function renderAdminActivity() {
+      const list = $('#adminActivity');
+      list.innerHTML = '';
+      adminActivity.slice(0,6).forEach(act => {
+        const li = document.createElement('li');
+        li.className = "text-sm text-slate-200";
+        li.textContent = `${new Date().toLocaleString()} — ${act}`;
+        list.appendChild(li);
+      });
+    }
+
+    // Quick buttons hooking
+    $('#quickCreateEvent')?.addEventListener('click', () => {
+      navigateTo('event-management');
+      // focus event name
+      setTimeout(()=>$('#eventName')?.focus(), 300);
+    });
+    $('#quickPostUpdate')?.addEventListener('click', () => {
+      navigateTo('score-entry');
+      setTimeout(()=>$('#scoreEventSelect')?.focus(), 300);
+    });
+    $('#quickExport')?.addEventListener('click', () => {
+      exportUsersCSV();
+    });
+
+    // Shortcut grid nav
+    $('#gotoEvents')?.addEventListener('click', ()=>navigateTo('event-management'));
+    $('#gotoUsers')?.addEventListener('click', ()=>navigateTo('user-management'));
+    $('#gotoFinancials')?.addEventListener('click', ()=>navigateTo('financials'));
+
+    // -----------------------------
+    // Events Management: rendering & forms
+    // -----------------------------
+    function renderEventsTable(filter='') {
+      const tbody = $('#eventsTableBody');
+      const search = (filter.search || '').toLowerCase();
+      const sportFilter = filter.sport || '';
+
+      const filtered = eventsData.filter(ev => {
+        const matchSearch = search ? (ev.name.toLowerCase().includes(search) || ev.location.toLowerCase().includes(search)) : true;
+        const matchSport = sportFilter ? ev.sport === sportFilter : true;
+        return matchSearch && matchSport;
+      });
+
+      tbody.innerHTML = '';
+      filtered.forEach(ev => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-3 py-2">${ev.name}</td>
+          <td class="px-3 py-2">${ev.sport}</td>
+          <td class="px-3 py-2">${(new Date(ev.datetime)).toLocaleString()}</td>
+          <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${ev.status === 'Open' ? 'bg-ath-green text-black' : 'bg-white/5'}">${ev.status}</span></td>
+          <td class="px-3 py-2">
+            <button class="editEventBtn px-2 py-1 text-xs rounded bg-white/5" data-id="${ev.id}">Edit</button>
+            <button class="deleteEventBtn px-2 py-1 text-xs rounded bg-red-600/30 ml-1" data-id="${ev.id}">Delete</button>
+            <button class="viewScheduleBtn px-2 py-1 text-xs rounded bg-ath-blue ml-1" data-id="${ev.id}">View</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // attach action handlers
+      $$('.editEventBtn').forEach(b => b.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        openEventForEdit(id);
+      }));
+      $$('.deleteEventBtn').forEach(b => b.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        if (confirm('Delete event? This will remove it from mock data.')) {
+          eventsData = eventsData.filter(ev => ev.id !== id);
+          adminActivity.unshift(`Deleted event ${id}`);
+          renderEventsTable({search: $('#searchEvents').value, sport: $('#filterSport').value});
+          renderKPIs();
+        }
+      }));
+      $$('.viewScheduleBtn').forEach(b => b.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        alert('View schedule (placeholder) for ' + id);
+      }));
+    }
+
+    // Event form handlers
+    $('#eventForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = $('#eventId').value;
+      const name = $('#eventName').value.trim();
+      const sport = $('#eventSport').value;
+      const datetime = $('#eventDateTime').value;
+      const location = $('#eventLocation').value.trim();
+      const status = $('#eventStatus').checked ? 'Open' : 'Closed';
+      const desc = $('#eventDescription').value.trim();
+
+      if (!name || !datetime) {
+        alert('Please provide event name and date/time.');
+        return;
+      }
+
+      if (id) {
+        // update existing
+        const idx = eventsData.findIndex(ev => ev.id === id);
+        if (idx > -1) {
+          eventsData[idx] = { id, name, sport, datetime, location, status, description: desc };
+          adminActivity.unshift(`Updated event: ${name}`);
+        }
+      } else {
+        // create new
+        const newEvent = { id: generateId('evt'), name, sport, datetime, location, status, description: desc };
+        eventsData.unshift(newEvent);
+        adminActivity.unshift(`Created event: ${name}`);
+      }
+
+      // reset & re-render
+      $('#eventForm').reset();
+      $('#eventId').value = '';
+      toggleStatusDot(false);
+      renderEventsTable({search: $('#searchEvents').value, sport: $('#filterSport').value});
+      renderKPIs();
+      renderAdminActivity();
+      alert('Event saved (mock).');
+    });
+
+    // edit opens event into form
+    function openEventForEdit(id) {
+      const ev = eventsData.find(x => x.id === id);
+      if (!ev) return;
+      $('#eventId').value = ev.id;
+      $('#eventName').value = ev.name;
+      $('#eventSport').value = ev.sport;
+      $('#eventDateTime').value = ev.datetime;
+      $('#eventLocation').value = ev.location;
+      $('#eventStatus').checked = ev.status === 'Open';
+      $('#eventDescription').value = ev.description;
+      toggleStatusDot(ev.status === 'Open');
+      // navigate to events section
+      navigateTo('event-management');
+      // scroll to form
+      setTimeout(()=>$('#eventName')?.scrollIntoView({behavior:'smooth'}), 200);
+    }
+
+    // reset event form
+    $('#resetEvent')?.addEventListener('click', () => {
+      $('#eventForm').reset();
+      $('#eventId').value = '';
+      toggleStatusDot(false);
+    });
+
+    // status toggle dot movement
+    function toggleStatusDot(isOpen) {
+      const dot = $('#statusToggleDot');
+      if (!dot) return;
+      if (isOpen) {
+        dot.style.transform = 'translateX(22px)';
+      } else {
+        dot.style.transform = 'translateX(0)';
+      }
+    }
+    // keep status dot in sync when clicking input
+    $('#eventStatus')?.addEventListener('change', (e) => toggleStatusDot(e.currentTarget.checked));
+
+    // search/filter events
+    $('#searchEvents')?.addEventListener('input', (e) => {
+      renderEventsTable({search: e.target.value, sport: $('#filterSport').value});
+    });
+    $('#filterSport')?.addEventListener('change', (e) => {
+      renderEventsTable({search: $('#searchEvents').value, sport: e.target.value});
+    });
+
+    // -----------------------------
+    // Score entry: live update posting
+    // -----------------------------
+    function populateScoreEventSelect() {
+      const sel = $('#scoreEventSelect');
+      sel.innerHTML = '';
+      eventsData.forEach(ev => {
+        const opt = document.createElement('option');
+        opt.value = ev.id;
+        opt.textContent = `${ev.name} — ${ev.sport} — ${new Date(ev.datetime).toLocaleDateString()}`;
+        sel.appendChild(opt);
+      });
+    }
+
+    $('#scoreForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const eid = $('#scoreEventSelect').value;
+      const team1 = $('#team1Name').value.trim();
+      const s1 = $('#team1Score').value;
+      const team2 = $('#team2Name').value.trim();
+      const s2 = $('#team2Score').value;
+      const type = $('#updateType').value;
+
+      if (!eid || !team1 || !team2) {
+        alert('Please fill event and team names.');
+        return;
+      }
+
+      const msg = `${type}: ${team1} ${s1} - ${s2} ${team2} (Event: ${eid})`;
+      // Add to live updates mock preview
+      addLiveUpdatePreview(msg);
+      adminActivity.unshift(`Posted live update for ${eid}`);
+      renderAdminActivity();
+      $('#scoreForm').reset();
+      populateScoreEventSelect();
+      alert('Live update posted (mock).');
+    });
+
+    $('#resetScore')?.addEventListener('click', ()=>$('#scoreForm').reset());
+
+    function addLiveUpdatePreview(text) {
+      const container = $('#liveUpdatesPreview');
+      const el = document.createElement('div');
+      el.className = 'p-3 rounded-lg bg-white/5';
+      el.textContent = `${new Date().toLocaleTimeString()} — ${text}`;
+      container.prepend(el);
+      // keep only latest 10
+      const kids = Array.from(container.children);
+      if (kids.length > 10) kids.slice(10).forEach(k=>k.remove());
+    }
+
+    // -----------------------------
+    // User management: table, search, pagination, export CSV
+    // -----------------------------
+    let usersPerPage = 8;
+    let currentUserPage = 1;
+
+    function renderUsersTable() {
+      const tbody = $('#usersTableBody');
+      const search = $('#searchUsers')?.value?.toLowerCase() || '';
+      const filtered = usersData.filter(u => u.name.toLowerCase().includes(search) || u.id.toLowerCase().includes(search) || u.sport.toLowerCase().includes(search));
+      const totalPages = Math.max(1, Math.ceil(filtered.length / usersPerPage));
+      if (currentUserPage > totalPages) currentUserPage = totalPages;
+
+      const start = (currentUserPage - 1) * usersPerPage;
+      const pageItems = filtered.slice(start, start + usersPerPage);
+
+      tbody.innerHTML = '';
+      pageItems.forEach(u => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-3 py-2">${u.name}</td>
+          <td class="px-3 py-2">${truncateId(u.id)}</td>
+          <td class="px-3 py-2">${u.sport}</td>
+          <td class="px-3 py-2">${u.role}</td>
+          <td class="px-3 py-2"><button class="viewProfileBtn px-2 py-1 rounded bg-white/5 text-xs" data-id="${u.id}">View</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      $('#userPageInfo').textContent = `Page ${currentUserPage} of ${totalPages}`;
+      // view profile handlers (placeholder)
+      $$('.viewProfileBtn').forEach(b => b.addEventListener('click', () => alert('View profile (placeholder)')));
+    }
+
+    $('#searchUsers')?.addEventListener('input', () => {
+      currentUserPage = 1;
+      renderUsersTable();
+    });
+
+    $('#prevUserPage')?.addEventListener('click', () => {
+      if (currentUserPage > 1) { currentUserPage--; renderUsersTable(); }
+    });
+    $('#nextUserPage')?.addEventListener('click', () => {
+      // compute total pages
+      const search = $('#searchUsers')?.value?.toLowerCase() || '';
+      const filtered = usersData.filter(u => u.name.toLowerCase().includes(search) || u.id.toLowerCase().includes(search) || u.sport.toLowerCase().includes(search));
+      const totalPages = Math.max(1, Math.ceil(filtered.length / usersPerPage));
+      if (currentUserPage < totalPages) { currentUserPage++; renderUsersTable(); }
+    });
+
+    // Export CSV functionality (client-side)
+    function exportUsersCSV() {
+      if (!usersData.length) { alert('No user data to export'); return; }
+      const header = ['Name','ID','SportPreference','Role'];
+      const rows = usersData.map(u => [u.name, u.id, u.sport, u.role]);
+      const csvContent = [header, ...rows].map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `athletix_users_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      adminActivity.unshift('Exported user data (CSV)');
+      renderAdminActivity();
+    }
+
+    $('#exportCsv')?.addEventListener('click', exportUsersCSV);
+    $('#exportUsers')?.addEventListener && $('#exportUsers').addEventListener('click', exportUsersCSV);
+
+    // also wired to shortcut
+    $('#exportCsv')?.addEventListener('click', ()=>{/* handled above */});
+
+    // -----------------------------
+    // Financials: render table & add record
+    // -----------------------------
+    function renderFinancialTable() {
+      const tbody = $('#financialTableBody');
+      tbody.innerHTML = '';
+      const items = financialData.slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+      items.slice(0,12).forEach(f => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="px-3 py-2">${f.date}</td>
+          <td class="px-3 py-2">${f.type}</td>
+          <td class="px-3 py-2">${f.description}</td>
+          <td class="px-3 py-2 text-right">${formatCurrency(f.amount)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    $('#financialForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const type = $('#finType').value;
+      const amount = Number($('#finAmount').value);
+      const desc = $('#finDesc').value.trim();
+      const date = $('#finDate').value;
+      if (!amount || !desc || !date) {
+        alert('Please fill amount, description and date.');
+        return;
+      }
+      financialData.unshift({ date, type, description: desc, amount });
+      adminActivity.unshift(`Added financial record: ${type} ${formatCurrency(amount)}`);
+      renderFinancialTable();
+      renderKPIs();
+      renderAdminActivity();
+      $('#financialForm').reset();
+      alert('Financial record added (mock).');
+    });
+
+    $('#resetFin')?.addEventListener('click', ()=>$('#financialForm').reset());
+
+    // -----------------------------
+    // Initial render call
+    // -----------------------------
+    function initialRender() {
+      renderKPIs();
+      renderAdminActivity();
+      renderEventsTable({});
+      populateScoreEventSelect();
+      renderUsersTable();
+      renderFinancialTable();
+    }
+
+    initialRender();
+
+    // -----------------------------
+    // Small UX additions & handlers
+    // -----------------------------
+    // Create event quick button triggers navigation and focuses form
+    $('#createEventQuick')?.addEventListener('click', ()=> {
+      navigateTo('event-management');
+      setTimeout(()=>$('#eventName')?.focus(),300);
+    });
+
+    // CTA create event quick in header
+    $('#createEventQuick')?.addEventListener('click', ()=>navigateTo('event-management'));
+
+    // populate score event select whenever events change
+    function refreshAfterDataChange() {
+      populateScoreEventSelect();
+      renderEventsTable({});
+      renderUsersTable();
+      renderFinancialTable();
+      renderKPIs();
+    }
+
+    // Expose a global for debugging/testing in console (optional)
+    window._athletix = {
+      eventsData, usersData, financialData, adminActivity, refreshAfterDataChange
+    };
+
+    // -----------------------------
+    // Comment Summary for Developers
+    // -----------------------------
+    /* 
+      - Routing: navigateTo(section) hides all main sections and shows requested section.
+      - Data: Mock arrays (eventsData, usersData, financialData) simulate backend data; replace these with fetch() calls.
+      - Forms: Each form prevents default submit and mutates the in-memory arrays, then re-renders affected views.
+      - Search & Pagination: Users table uses a simple client-side pagination (usersPerPage), and search filters current set.
+      - Export CSV: exportUsersCSV() converts usersData to CSV and triggers browser download.
+      - Mobile: Sidebar is fixed on desktop (md+). On small screens a slide-in panel is provided (mobileSidebar).
+      - Replace alerts with polished modals/dialogs and add server endpoints for persistent CRUD in production.
+    */
+
+  </script>
+</body>
+</html>
